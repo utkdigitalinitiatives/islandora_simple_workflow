@@ -1,0 +1,5 @@
+<?php
+
+function islandora_simple_workflow_islandora_ingest_pre_ingest($islandora_object, $content_models, $collection_pid) {
+  
+}
