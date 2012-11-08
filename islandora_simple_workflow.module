@@ -1,5 +1,75 @@
 <?php
 
-function islandora_simple_workflow_islandora_ingest_pre_ingest($islandora_object, $content_models, $collection_pid) {
+function islandora_simple_workflow_menu() {
+  $items = array();
+  $items['admin/islandora/simple_workflow/list'] = array(
+    'title' => 'Simple Workflow objects',
+    'description' => 'List of inactive objects.',
+    'page callback' => 'islandora_simple_workflow_manage_list',
+    'access arguments' => array('manage inactive objects'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ *
+ * @return array
+ */
+function islandora_simple_workflow_permission() {
+  return array(
+    'bypass inactive object state' => array(
+      'title' => t('Bypass default inactive object state'),
+      'description' => t('Islandora Simple Workflow sets ingested objects as inactive if enabled.'),
+    ),
+    'manage inactive objects' => array(
+      'title' => t('Manage inactive objects'),
+      'description' => t('View a list of inactive objects.'),
+    ),
+  );
+}
+
+function islandora_simple_workflow_islandora_ingest_pre_ingest_alter(&$object) {
+  if (!user_access('bypass inactive object state')) {
+    $object->state = 'I';
+  }
+}
+
+function islandora_simple_workflow_manage_list() {
+  $inactive_objects = _islandora_simple_workflow_get_inactive_objects();
+
+  if (count($inactive_objects)) {
+    $header = array(t('Title'));
+
+    $rows = array();
+    foreach ($inactive_objects AS $inactive_object) {
+      $rows[] = array(l($inactive_object['title']['value'], 'islandora/object/' . $inactive_object['object']['value']));
+    }
+    $markup = theme('table', array('header' => $header, 'rows' => $rows));
+  }
+  else {
+    $markup = t('No inactive objects were found.');
+  }
   
+  $output = array(
+    '#type' => 'markup',
+    '#markup' => $markup,
+  );
+  return $output;
+}
+
+function _islandora_simple_workflow_get_inactive_objects() {
+  module_load_include('inc', 'islandora', 'includes/tuque');
+
+  $connection = new IslandoraTuque();
+
+  $query = 'select $object $title from <#ri>
+    where $object <dc:title> $title
+    and $object <fedora-model:state> <info:fedora/fedora-system:def/model#Inactive>
+    order by $object';
+
+  $results = $connection->repository->ri->itqlQuery($query);
+
+  return $results;
 }
