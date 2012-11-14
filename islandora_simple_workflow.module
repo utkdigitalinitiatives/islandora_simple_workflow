@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Implements hook_menu().
+ *
+ * @return array
+ */
 function islandora_simple_workflow_menu() {
   $items = array();
   $items['admin/islandora/simple_workflow/list'] = array(
@@ -30,28 +35,40 @@ function islandora_simple_workflow_permission() {
   );
 }
 
-function islandora_simple_workflow_islandora_ingest_pre_ingest_alter(&$object) {
+/**
+ * Implements hook_islandora_pre_ingest_alter().
+ *
+ * @param $object
+ */
+function islandora_simple_workflow_islandora_pre_ingest_alter(&$object) {
   if (!user_access('bypass inactive object state')) {
     $object->state = 'I';
   }
 }
 
+/**
+ * Page callback, returns list of inactive objects.
+ *
+ * @return array
+ */
 function islandora_simple_workflow_manage_list() {
   $inactive_objects = _islandora_simple_workflow_get_inactive_objects();
 
   if (count($inactive_objects)) {
-    $header = array(t('Title'));
-
+    $header = array(t('Title'), '');
     $rows = array();
+
     foreach ($inactive_objects AS $inactive_object) {
-      $rows[] = array(l($inactive_object['title']['value'], 'islandora/object/' . $inactive_object['object']['value']));
+      $object_link = l($inactive_object['title']['value'], 'islandora/object/' . $inactive_object['object']['value']);
+      $manage_link = l(t('Manage'), 'islandora/object/' . $inactive_object['object']['value'] . '/manage/properties');
+      $rows[] = array($object_link, $manage_link);
     }
     $markup = theme('table', array('header' => $header, 'rows' => $rows));
   }
   else {
     $markup = t('No inactive objects were found.');
   }
-  
+
   $output = array(
     '#type' => 'markup',
     '#markup' => $markup,
@@ -59,6 +76,11 @@ function islandora_simple_workflow_manage_list() {
   return $output;
 }
 
+/**
+ * Query for inactive objects.
+ *
+ * @return mixed
+ */
 function _islandora_simple_workflow_get_inactive_objects() {
   module_load_include('inc', 'islandora', 'includes/tuque');
 
