@@ -7,8 +7,6 @@
 
 /**
  * Implements hook_menu().
- *
- * @return array The menu.
  */
 function islandora_simple_workflow_menu() {
   $items = array();
@@ -24,8 +22,6 @@ function islandora_simple_workflow_menu() {
 
 /**
  * Implements hook_permission().
- *
- * @return array The permissions.
  */
 function islandora_simple_workflow_permission() {
   return array(
@@ -54,7 +50,8 @@ function islandora_simple_workflow_islandora_object_alter(AbstractFedoraObject $
 /**
  * Page callback.
  *
- * @return array List of inactive object.
+ * @return array
+ *   List of inactive object.
  */
 function islandora_simple_workflow_manage_list() {
   $inactive_objects = _islandora_simple_workflow_get_inactive_objects();
@@ -84,7 +81,8 @@ function islandora_simple_workflow_manage_list() {
 /**
  * Query for inactive objects.
  *
- * @return mixed The inactive objects.
+ * @return mixed
+ *   The inactive objects.
  */
 function _islandora_simple_workflow_get_inactive_objects() {
   $connection = new IslandoraTuque();
