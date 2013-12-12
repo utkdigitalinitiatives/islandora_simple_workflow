@@ -70,9 +70,11 @@ function islandora_simple_workflow_manage_list() {
     $rows = array();
 
     foreach ($inactive_objects as $inactive_object) {
-      $object_link = l($inactive_object['title']['value'], 'islandora/object/' . $inactive_object['object']['value']);
-      $manage_link = l(t('Manage'), 'islandora/object/' . $inactive_object['object']['value'] . '/manage/properties');
-      $rows[] = array($object_link, $manage_link);
+      if ($inactive_object['title']['value'] != '') {
+        $object_link = l($inactive_object['title']['value'], 'islandora/object/' . $inactive_object['object']['value']);
+        $manage_link = l(t('Manage'), 'islandora/object/' . $inactive_object['object']['value'] . '/manage/properties');
+        $rows[] = array($object_link, $manage_link);
+      }
     }
     $markup = theme('table', array('header' => $header, 'rows' => $rows));
   }
