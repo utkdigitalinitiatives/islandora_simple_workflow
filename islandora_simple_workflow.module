@@ -70,11 +70,9 @@ function islandora_simple_workflow_manage_list() {
     $rows = array();
 
     foreach ($inactive_objects as $inactive_object) {
-      if ($inactive_object['title']['value'] != '') {
-        $object_link = l($inactive_object['title']['value'], 'islandora/object/' . $inactive_object['object']['value']);
-        $manage_link = l(t('Manage'), 'islandora/object/' . $inactive_object['object']['value'] . '/manage/properties');
-        $rows[] = array($object_link, $manage_link);
-      }
+      $object_link = l($inactive_object['title']['value'], 'islandora/object/' . $inactive_object['object']['value']);
+      $manage_link = l(t('Manage'), 'islandora/object/' . $inactive_object['object']['value'] . '/manage/properties');
+      $rows[] = array($object_link, $manage_link);
     }
     $markup = theme('table', array('header' => $header, 'rows' => $rows));
   }
@@ -98,7 +96,7 @@ function islandora_simple_workflow_manage_list() {
 function _islandora_simple_workflow_get_inactive_objects() {
   $connection = new IslandoraTuque();
   $query = 'select $object $title from <#ri>
-    where $object <dc:title> $title
+    where $object <fedora-model:label> $title
     and $object <fedora-model:state> <info:fedora/fedora-system:def/model#Inactive>
     order by $object';
   $results = $connection->repository->ri->itqlQuery($query);
