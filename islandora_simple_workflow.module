@@ -13,9 +13,10 @@ function islandora_simple_workflow_menu() {
   $items['admin/islandora/simple_workflow/list'] = array(
     'title' => 'Simple Workflow objects',
     'description' => 'List of inactive objects.',
-    'page callback' => 'islandora_simple_workflow_manage_list',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('islandora_simple_workflow_manage_form'),
     'access arguments' => array('manage inactive objects'),
-    'type' => MENU_NORMAL_ITEM,
+    'file' => 'includes/manage.inc',
   );
   return $items;
 }
@@ -54,51 +55,4 @@ function islandora_simple_workflow_islandora_object_alter(AbstractObject $object
       $object->state = 'I';
     }
   }
-}
-
-/**
- * Page callback.
- *
- * @return array
- *   List of inactive object.
- */
-function islandora_simple_workflow_manage_list() {
-  $inactive_objects = _islandora_simple_workflow_get_inactive_objects();
-
-  if (count($inactive_objects)) {
-    $header = array(t('Title'), '');
-    $rows = array();
-
-    foreach ($inactive_objects as $inactive_object) {
-      $object_link = l($inactive_object['title']['value'], 'islandora/object/' . $inactive_object['object']['value']);
-      $manage_link = l(t('Manage'), 'islandora/object/' . $inactive_object['object']['value'] . '/manage/properties');
-      $rows[] = array($object_link, $manage_link);
-    }
-    $markup = theme('table', array('header' => $header, 'rows' => $rows));
-  }
-  else {
-    $markup = t('No inactive objects were found.');
-  }
-
-  $output = array(
-    '#type' => 'markup',
-    '#markup' => $markup,
-  );
-  return $output;
-}
-
-/**
- * Query for inactive objects.
- *
- * @return mixed
- *   The inactive objects.
- */
-function _islandora_simple_workflow_get_inactive_objects() {
-  $connection = new IslandoraTuque();
-  $query = 'select $object $title from <#ri>
-    where $object <fedora-model:label> $title
-    and $object <fedora-model:state> <info:fedora/fedora-system:def/model#Inactive>
-    order by $object';
-  $results = $connection->repository->ri->itqlQuery($query);
-  return $results;
 }
