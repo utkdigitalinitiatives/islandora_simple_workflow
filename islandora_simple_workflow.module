@@ -10,7 +10,7 @@
  */
 function islandora_simple_workflow_menu() {
   $items = array();
-  $items['admin/islandora/simple_workflow/list'] = array(
+  $items['admin/islandora/tools/simple_workflow/list'] = array(
     'title' => 'Simple Workflow objects',
     'description' => 'List of inactive objects.',
     'page callback' => 'drupal_get_form',
