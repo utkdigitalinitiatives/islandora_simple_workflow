@@ -19,7 +19,7 @@ Install as usual, see [this](https://drupal.org/documentation/install/modules-th
 
 ## Configuration
 
-Simple Workflow objects can be managed at Administration » Islandora » Simple Workflow objects (admin/islandora/simple_workflow/list).
+Simple Workflow objects can be managed at Administration » Islandora » Simple Workflow objects (admin/islandora/tools/simple_workflow/list).
 
 ## Troubleshooting/Issues
 
