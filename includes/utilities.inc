@@ -11,7 +11,7 @@
  *   An array containing the results of the inactive objects query.
  */
 function islandora_simple_workflow_get_inactive_objects() {
-  $connection = new IslandoraTuque();
+  $connection = islandora_get_tuque_connection();
   $query = <<<EOQ
 SELECT ?object ?title FROM <#ri> WHERE
 {
