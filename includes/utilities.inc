@@ -13,10 +13,11 @@
 function islandora_simple_workflow_get_inactive_objects() {
   $connection = islandora_get_tuque_connection();
   $query = <<<EOQ
-SELECT ?object ?title FROM <#ri> WHERE
+SELECT ?object ?title ?owner FROM <#ri> WHERE
 {
   ?object <fedora-model:label> ?title ;
-          <fedora-model:state> <info:fedora/fedora-system:def/model#Inactive>
+          <fedora-model:state> <info:fedora/fedora-system:def/model#Inactive> ;
+          <fedora-model:ownerId> ?owner
   !optionals
   !filters
 }
