@@ -60,7 +60,7 @@ function is_islandora_simple_workflow_object_accepted($pid) {
 
 }
 
-function can_islandora_simple_workflow_object_user_role_read($pid) {
+function can_islandora_simple_workflow_object_read_user_role($pid) {
     global $user;
     $user_roles_array = array_keys($user->roles);
     $namespace = islandora_get_namespace($pid);

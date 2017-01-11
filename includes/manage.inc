@@ -42,7 +42,7 @@ function islandora_simple_workflow_manage_form($form, $form_state) {
     $rows = array();
     foreach ($inactive_objects as $inactive_object) {
       $pid = $inactive_object['object']['value'];
-      if (is_islandora_simple_workflow_object_accepted($pid) && can_islandora_simple_workflow_object_user_role_read($pid)) {
+      if (is_islandora_simple_workflow_object_accepted($pid) && can_islandora_simple_workflow_object_read_user_role($pid)) {
         
         //$rows[$pid] = array(l($inactive_object['title']['value'], $inactive_object['owner']['value'], "islandora/object/$pid"));
         //$rows[$pid] = array(l($inactive_object['title']['value'], "islandora/object/$pid"), l($inactive_object['owner']['value'], "user/$inactive_object['owner']['value']"));
