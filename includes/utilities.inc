@@ -66,18 +66,18 @@ function can_islandora_simple_workflow_object_read_user_role($pid) {
     $namespace = islandora_get_namespace($pid);
     $query = db_select('islandora_workflow_namespace_role', 'iwnr');
     $db_or = db_or();
-    $db_or->condition('iwnr.rid', $user_roles_array, 'IN');
-    $db_or->condition('iwnr.rid', 'ALL');
+    $db_or->condition('iwnr.namespace', $namespace);
+    $db_or->condition('iwnr.namespace', 'ALL');
     $db_and = db_and();
-    $db_and->condition('iwnr.namespace', $namespace);
+    $db_and->condition('iwnr.rid', $user_roles_array, 'IN');
     $db_and->condition($db_or);
     $query->condition($db_and);
-    $query->addExpression('COUNT(iwnr.namespace)', '');
+    $query->addExpression('COUNT(iwnr.namespace)', 'namespace_count');
     $query->groupBy('iwnr.namespace');
-    $query->execute();
-    $num = $query->rowCount();
+    $results = $query->execute();
+    $num = $results->rowCount();
     if ($num > 0) {
-        $namespace_count_record = $query->fetchObject();
+        $namespace_count_record = $results->fetchObject();
         if ($namespace_count_record && ($namespace_count_record->namespace_count > 0)) {
             return TRUE;
         }
