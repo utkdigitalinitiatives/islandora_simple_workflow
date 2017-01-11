@@ -42,9 +42,12 @@ function islandora_simple_workflow_manage_form($form, $form_state) {
     $rows = array();
     foreach ($inactive_objects as $inactive_object) {
       $pid = $inactive_object['object']['value'];
-      //$rows[$pid] = array(l($inactive_object['title']['value'], $inactive_object['owner']['value'], "islandora/object/$pid"));
-      //$rows[$pid] = array(l($inactive_object['title']['value'], "islandora/object/$pid"), l($inactive_object['owner']['value'], "user/$inactive_object['owner']['value']"));
-      $rows[$pid] = array(l($inactive_object['title']['value'], "islandora/object/$pid"), l($inactive_object['owner']['value'], "users/" . $inactive_object['owner']['value']));
+      if (is_islandora_simple_workflow_object_accepted($pid) && can_islandora_simple_workflow_object_user_role_read($pid)) {
+        
+        //$rows[$pid] = array(l($inactive_object['title']['value'], $inactive_object['owner']['value'], "islandora/object/$pid"));
+        //$rows[$pid] = array(l($inactive_object['title']['value'], "islandora/object/$pid"), l($inactive_object['owner']['value'], "user/$inactive_object['owner']['value']"));
+        $rows[$pid] = array(l($inactive_object['title']['value'], "islandora/object/$pid"), l($inactive_object['owner']['value'], "users/" . $inactive_object['owner']['value']));
+      }
     }
     $form['management_table'] = array(
       '#type' => 'tableselect',

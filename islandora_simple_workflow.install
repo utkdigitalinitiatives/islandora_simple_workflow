@@ -1,0 +1,25 @@
+ <?php
+
+/**
+ * Implements hook_schema().
+ */
+function islandora_simple_workflow_schema() {
+  $schema['islandora_workflow_namespace_role'] = array(
+    'description' => 'Save policies for an entire namespace',
+    'fields' => array(
+      'namespace' => array(
+		'description' => 'namespace that is associated with a role id',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'rid' => array(
+        'description' => 'Role Id from the role table',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE, 
+      ),
+    ),
+  );
+  return $schema;
+}
