@@ -54,6 +54,7 @@ function islandora_simple_workflow_publish_batch_operation($pids, &$context) {
         '@current' => $context['sandbox']['progress'],
         '@total' => $context['sandbox']['total'],
     ));
+    islandora_simple_workflow_object_policy_update($target_object);
 //    $target_object->modifyObject( array('state' => 'A'));
       $target_object->state = 'A';
     $context['results']['success'][] = $target_pid;

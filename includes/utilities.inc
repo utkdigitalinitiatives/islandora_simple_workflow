@@ -59,7 +59,22 @@ function is_islandora_simple_workflow_object_accepted($pid) {
     return FALSE;
 
 }
+function does_islandora_simple_workflow_namespace_need_accept($namespace) {
+    $db_and = db_and();
+    $db_and->condition('w.needs_approval', '1');
+    $db_and->condition('w.namespace', $namespace);
+    $query = db_select('islandora_workflow_namespace_role', 'w')
+        ->fields('w', array('needs_approval'))
+        ->condition($db_and)
+        ->execute();
 
+    $num = $query->rowCount();
+    if ($num > 0) {
+        return TRUE;
+    } 
+    return FALSE;
+
+}
 function can_islandora_simple_workflow_object_read_user_role($pid) {
     global $user;
     $user_roles_array = array_keys($user->roles);
@@ -83,4 +98,45 @@ function can_islandora_simple_workflow_object_read_user_role($pid) {
         }
     }
     return FALSE;
+}
+
+function islandora_simple_workflow_retrieve_namespace_published_policy($namespace) {
+
+    // get the policy from the database that corresponds to the namespace
+
+    $query = db_select('trace_workflow_namespace_policies', 't')
+        ->fields('t', array('published_policy'))
+        ->condition('t.namespace', $namespace)
+        ->range(0, 1)
+        ->execute();
+
+    $num = $query->rowCount();
+    if ($num > 0) {
+        $result = $query->fetchObject();
+        return $result->published_policy;
+    } else {
+        watchdog('islandora_simple_workflow', 'islandora_simple_workflow_retrieve_namespace_published_policy does not have policies for  %p.', array('%p' => $namespace), WATCHDOG_ERROR);
+        return FALSE;
+    }
+}
+
+
+/**
+ * Rules action callback; set a POLiCY datastream on an object and return.
+ */
+function islandora_simple_workflow_object_policy_update(AbstractObject $object) {
+    // determine the namespace of the object
+    $pid = $object->id;
+    $namespace = islandora_get_namespace($pid);
+
+
+    // get the policy from the database that corresponds to the namespace
+    $policy_xml = islandora_simple_workflow_retrieve_namespace_published_policy($namespace);
+    // add the policy to the object
+    
+    $pid = $object->id;
+    $repository = $object->repository;
+
+    return $repository->api->m->modifyDatastream($pid, 'POLICY', array('dsString' => $policy_xml));
+
 }
