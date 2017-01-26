@@ -57,12 +57,7 @@ function islandora_simple_workflow_publish_batch_operation($pids, &$context) {
     
     // determine if there are any  xacml policies that should replace
     // the existing policy
-    $policy_extension_modules = module_implements('workflow_extend_policy');
-    if (count($policy_extension_modules) > 0 ) {
-        foreach ($policy_extension_modules as $policy_extension_module) {
-            $rows[] = module_invoke($module, 'workflow_extend_policy', $target_object);
-        }
-    } 
+    drupal_alter('workflow_extend_policy', $target_object);
     $target_object->state = 'A';
     $context['results']['success'][] = $target_pid;
     $context['sandbox']['progress']++;
