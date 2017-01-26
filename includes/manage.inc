@@ -38,17 +38,26 @@ function islandora_simple_workflow_manage_form($form, $form_state) {
     );
   }
   else {
-    $inactive_objects = islandora_simple_workflow_get_inactive_objects();
+          // The rows array should be an associative array that provides the pid as a key
+    // and an array of links that will be make into an html list
     $rows = array();
-    foreach ($inactive_objects as $inactive_object) {
-      $pid = $inactive_object['object']['value'];
-      if (is_islandora_simple_workflow_object_accepted($pid) && can_islandora_simple_workflow_object_read_user_role($pid)) {
-        
-        //$rows[$pid] = array(l($inactive_object['title']['value'], $inactive_object['owner']['value'], "islandora/object/$pid"));
-        //$rows[$pid] = array(l($inactive_object['title']['value'], "islandora/object/$pid"), l($inactive_object['owner']['value'], "user/$inactive_object['owner']['value']"));
-        $rows[$pid] = array(l($inactive_object['title']['value'], "islandora/object/$pid"), l($inactive_object['owner']['value'], "users/" . $inactive_object['owner']['value']));
-      }
+    // if there are extension modules, then pull rows from the extensions
+    // if there are none then follow the default workflow
+    $workflow_extension_modules = module_implements('workflow_extend_filter');
+    if (count($workflow_extension_modules) > 0 ) {
+        foreach ($workflow_extension_modules as $workflow_extension_module) {
+            $rows[] = module_invoke($module, 'workflow_extend_filter');
+        }
+    } else {
+        $inactive_objects = islandora_simple_workflow_get_inactive_objects();
+        foreach ($inactive_objects as $inactive_object) {
+            $pid = $inactive_object['object']['value'];
+            $rows[$pid] = array(l($inactive_object['title']['value'], "islandora/object/$pid"), l($inactive_object['owner']['value'], "users/" . $inactive_object['owner']['value']));
+        }
     }
+
+    
+
     $form['management_table'] = array(
       '#type' => 'tableselect',
       '#header' => array(t('Object'), t('Owner')),
