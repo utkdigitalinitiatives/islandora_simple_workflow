@@ -44,7 +44,7 @@ function islandora_simple_workflow_manage_form($form, $form_state) {
     
     // if there are extension modules, then pull rows from the extensions
     // if there are none then follow the default workflow
-    drupal_alter('workflow_manage_objects', $inactive_objects);
+    drupal_alter('simple_workflow_filter_select', $inactive_objects);
     $rows = array();
     foreach ($inactive_objects as $inactive_object) {
         $pid = $inactive_object['object']['value'];
