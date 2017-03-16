@@ -1,3 +1,4 @@
+sudo: required
 language: php
 php:
   - 5.3.3
@@ -22,9 +23,11 @@ before_install:
   - cd $HOME/drupal-*
   - ln -s $TRAVIS_BUILD_DIR sites/all/modules/islandora_simple_workflow
   - drush en --yes islandora_simple_workflow
+before_script:
+  # Mysql might time out for long tests, increase the wait timeout.
+  - mysql -e 'SET @@GLOBAL.wait_timeout=1200'
 script:
   - ant -buildfile sites/all/modules/islandora_simple_workflow/build.xml lint
   - $ISLANDORA_DIR/tests/scripts/line_endings.sh sites/all/modules/islandora_simple_workflow
   - drush coder-review --reviews=production,security,style,i18n,potx,sniffer islandora_simple_workflow
   - phpcpd --names *.module,*.inc,*.test sites/all/modules/islandora_simple_workflow
-  - drush test-run --uri=http://localhost:8081 "Islandora Simple Workflow"
