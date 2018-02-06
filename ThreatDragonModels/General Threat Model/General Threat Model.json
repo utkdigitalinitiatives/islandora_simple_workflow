@@ -1,0 +1,16 @@
+{
+  "summary": {
+    "title": "General Threat Model",
+    "owner": "Don Richards"
+  },
+  "detail": {
+    "contributors": [],
+    "diagrams": [
+      {
+        "title": "Workflow",
+        "thumbnail": "./public/content/images/thumbnail.jpg",
+        "id": 0
+      }
+    ]
+  }
+}
