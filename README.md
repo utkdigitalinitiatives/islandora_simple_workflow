@@ -1,4 +1,4 @@
-# Islandora Simple Workflow [![Build Status](https://travis-ci.org/Islandora/islandora_simple_workflow.png?branch=7.x)](https://travis-ci.org/Islandora/islandora_simple_workflow)
+# Islandora Simple Workflow [![Build Status](https://travis-ci.org/utkdigitalinitiatives/islandora_simple_workflow.png?branch=7.x)](https://travis-ci.org/utkdigitalinitiatives/islandora_simple_workflow)
 
 ## Introduction
 
